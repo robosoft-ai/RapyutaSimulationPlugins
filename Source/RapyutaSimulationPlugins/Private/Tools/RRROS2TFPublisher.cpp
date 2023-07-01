@@ -42,7 +42,7 @@ void URRROS2TFPublisher::UpdateMessage(UROS2GenericMsg* InMessage)
     FROSTFStamped tfData;
 
     // time
-    tfData.Header.Stamp = URRConversionUtils::FloatToROSStamp(UGameplayStatics::GetTimeSeconds(GetWorld()));
+    tfData.Header.Stamp = URRConversionUtils::FloatToROSStamp(UGameplayStatics::GetTimeSeconds(GetWorld()) + 0.02);
     tfData.Header.FrameId = FrameId;
     tfData.ChildFrameId = ChildFrameId;
 
