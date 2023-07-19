@@ -31,6 +31,29 @@ void UDifferentialDriveComponent::SetWheels(UPhysicsConstraintComponent* InWheel
     fSetWheel(WheelRight, InWheelRight);
 }
 
+void UDifferentialDriveComponent::Set4Wheels(UPhysicsConstraintComponent* InWheelLeft, UPhysicsConstraintComponent* InWheelLeft2, UPhysicsConstraintComponent* InWheelRight, UPhysicsConstraintComponent* InWheelRight2)
+{
+    auto fSetWheel = [this](UPhysicsConstraintComponent*& CurWheel, UPhysicsConstraintComponent* NewWheel)
+    {
+        if (IsValid(NewWheel))
+        {
+            CurWheel = NewWheel;
+            CurWheel->SetAngularDriveMode(EAngularDriveMode::TwistAndSwing);
+            CurWheel->SetAngularDriveParams(MaxForce, MaxForce, MaxForce);
+            CurWheel->SetAngularVelocityDriveTwistAndSwing(true, false);
+        }
+        else
+        {
+            UE_LOG_WITH_INFO_NAMED(LogDifferentialDriveComponent, Error, TEXT("NewWheel is invalid!"));
+        }
+    };
+
+    fSetWheel(WheelLeft, InWheelLeft);
+    fSetWheel(WheelRight, InWheelRight);
+    fSetWheel(WheelLeft2, InWheelLeft2);
+    fSetWheel(WheelRight2, InWheelRight2);
+}
+
 void UDifferentialDriveComponent::SetPerimeter()
 {
     if (WheelRadius <= 1e-6)
@@ -64,6 +87,41 @@ void UDifferentialDriveComponent::UpdateMovement(float DeltaTime)
         WheelRight->SetAngularVelocityTarget(FVector(-velR / WheelPerimeter, 0, 0));
         WheelLeft->SetAngularDriveParams(MaxForce, MaxForce, MaxForce);
         WheelRight->SetAngularDriveParams(MaxForce, MaxForce, MaxForce);
+
+        if (IsValid(WheelLeft2) && IsValid(WheelRight2))
+        {
+            WheelLeft2->SetAngularVelocityTarget(FVector(-velL / WheelPerimeter, 0, 0));
+            WheelRight2->SetAngularVelocityTarget(FVector(-velR / WheelPerimeter, 0, 0));
+            WheelLeft2->SetAngularDriveParams(MaxForce, MaxForce, MaxForce);
+            WheelRight2->SetAngularDriveParams(MaxForce, MaxForce, MaxForce);
+        }
+        else
+        {
+            UE_LOG_WITH_INFO_NAMED(LogDifferentialDriveComponent, Error, TEXT("Wheel Joints 2 are not set"));
+        }
+    }
+    else
+    {
+        UE_LOG_WITH_INFO_NAMED(LogDifferentialDriveComponent, Error, TEXT("Wheel Joints are not set"));
+    }
+}
+
+void UDifferentialDriveComponent::Update4Movement(float DeltaTime)
+{
+    if (IsValid(WheelLeft) && IsValid(WheelLeft2) && IsValid(WheelRight) && IsValid(WheelRight2))
+    {
+        const float angularVelRad = FMath::DegreesToRadians(AngularVelocity.Z);
+        float velL = Velocity.X + angularVelRad * WheelSeparationHalf;
+        float velR = Velocity.X - angularVelRad * WheelSeparationHalf;
+
+        WheelLeft->SetAngularVelocityTarget(FVector(-velL / WheelPerimeter, 0, 0));
+        WheelRight->SetAngularVelocityTarget(FVector(-velR / WheelPerimeter, 0, 0));
+        WheelLeft->SetAngularDriveParams(MaxForce, MaxForce, MaxForce);
+        WheelRight->SetAngularDriveParams(MaxForce, MaxForce, MaxForce);
+        WheelLeft2->SetAngularVelocityTarget(FVector(-velL / WheelPerimeter, 0, 0));
+        WheelRight2->SetAngularVelocityTarget(FVector(-velR / WheelPerimeter, 0, 0));
+        WheelLeft2->SetAngularDriveParams(MaxForce, MaxForce, MaxForce);
+        WheelRight2->SetAngularDriveParams(MaxForce, MaxForce, MaxForce);
     }
     else
     {
@@ -185,3 +243,4 @@ void UDifferentialDriveComponent::Initialize()
         OdomComponent->bManualUpdate = true;
     }
 }
+

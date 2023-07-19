@@ -55,6 +55,8 @@ public:
      */
     virtual void UpdateMovement(float DeltaTime) override;
 
+    virtual void Update4Movement(float DeltaTime);
+
     /**
      * @brief Calculate odometry from Velocity and #AngularVelocity.
      *
@@ -72,6 +74,9 @@ public:
      */
     UFUNCTION(BlueprintCallable)
     void SetWheels(UPhysicsConstraintComponent* InWheelLeft, UPhysicsConstraintComponent* InWheelRight);
+
+    UFUNCTION(BlueprintCallable)
+    void Set4Wheels(UPhysicsConstraintComponent* InWheelLeft, UPhysicsConstraintComponent* InWheelLeft2, UPhysicsConstraintComponent* InWheelRight, UPhysicsConstraintComponent* InWheelRight2);
 
     /**
      * @brief Call Super::Initialize() and #SetPerimeter.
@@ -92,6 +97,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     UPhysicsConstraintComponent* WheelRight = nullptr;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPhysicsConstraintComponent* WheelLeft2 = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPhysicsConstraintComponent* WheelRight2 = nullptr;
     //! [cm]
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float WheelRadius = 1.f;
@@ -119,3 +129,4 @@ protected:
     UPROPERTY()
     float PoseEncoderThetaRad = 0.f;
 };
+
