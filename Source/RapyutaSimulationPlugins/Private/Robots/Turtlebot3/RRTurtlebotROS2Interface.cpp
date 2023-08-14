@@ -5,6 +5,6 @@
 // example of override of ros parameter
 void URRTurtlebotROS2Interface::SetupROSParams()
 {
-    bPublishOdom = true;
-    bPublishOdomTf = true;
+    bPublishOdom = false;
+    bPublishOdomTf = false;
 }

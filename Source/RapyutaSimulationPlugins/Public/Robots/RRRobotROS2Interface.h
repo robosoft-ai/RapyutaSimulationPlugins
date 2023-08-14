@@ -110,7 +110,7 @@ public:
     URRBaseOdomComponent* OdomComponent = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
-    bool bPublishOdom = true;
+    bool bPublishOdom = false;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
     bool bPublishOdomTf = false;
